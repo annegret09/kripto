@@ -11,6 +11,8 @@ import random
 
 from crypto import (encrypt_caesar, decrypt_caesar,
                     encrypt_vigenere, decrypt_vigenere,
+                    encrypt_scytale, decrypt_scytale,
+                    encrypt_railfence, decrypt_railfence,
                     generate_private_key, create_public_key,
                     encrypt_mh, decrypt_mh)
 
@@ -21,7 +23,7 @@ from crypto import (encrypt_caesar, decrypt_caesar,
 
 def get_tool():
     print("* Tool *")
-    return _get_selection("(C)aesar, (V)igenere or (M)erkle-Hellman? ", "CVM")
+    return _get_selection("(C)aesar, (V)igenere, (S)cytale, (R)ailfence or (M)erkle-Hellman? ", "CVSRM")
 
 
 def get_action():
@@ -102,6 +104,9 @@ def clean_caesar(text):
 def clean_vigenere(text):
     return ''.join(ch for ch in text.upper() if ch.isupper())
 
+####################################
+# CAESAR                         #
+####################################
 
 def run_caesar():
     action = get_action()
@@ -115,6 +120,10 @@ def run_caesar():
 
     set_output(output)
 
+####################################
+# VIGENERE                        #
+####################################
+
 
 def run_vigenere():
     action = get_action()
@@ -124,12 +133,60 @@ def run_vigenere():
     print("* Transform *")
     keyword = clean_vigenere(input("Keyword? "))
 
+    # ERROR HANDLING: only letters allowed
+    while not keyword.isalpha():
+        print("Keyword must contain only letters! Try again.")
+        keyword = clean_vigenere(input("Keyword? "))
+
     print("{}crypting {} using Vigenere cipher and keyword {}...".format('En' if encrypting else 'De', data, keyword))
 
     output = (encrypt_vigenere if encrypting else decrypt_vigenere)(data, keyword)
 
     set_output(output)
 
+####################################
+# SCYTALE                         #
+####################################
+
+def run_scytale():
+    action = get_action()
+    encrypting = action == 'E'
+    data = get_input(binary=False).strip().upper()
+
+    circumference = int(input("Circumference? "))
+    # ERROR HANDLING
+    while circumference < 2 or circumference > len(data):
+        print("Circumference must be >= 2 and <= message length.")
+        circumference = int(input("Circumference? "))
+
+    output = (encrypt_scytale if encrypting else decrypt_scytale)(data, circumference)
+
+    set_output(output)
+
+
+####################################
+# RAILFENCE                       #
+####################################
+
+def run_railfence():
+    action = get_action()
+    encrypting = action == 'E'
+    data = get_input(binary=False).strip().upper()
+
+    num_sin = int(input("Number of rails? "))
+    # ERROR HANDLING
+    while num_sin < 2:
+        print("Rails must be >= 2.")
+        num_sin = int(input("Number of rails? "))
+
+    output = (encrypt_railfence if encrypting else decrypt_railfence)(data, num_sin)
+
+    set_output(output)
+
+
+####################################
+# MERKLE–HELLMAN                  #
+####################################
 
 def run_merkle_hellman():
     action = get_action()
@@ -161,6 +218,10 @@ def run_merkle_hellman():
     set_output(output)
 
 
+####################################
+# SUITE MENU HANDLER              #
+####################################
+
 def run_suite():
     """
     Runs a single iteration of the cryptography suite.
@@ -170,12 +231,13 @@ def run_suite():
     """
     print('-' * 34)
     tool = get_tool()
-    # This isn't the cleanest way to implement functional control flow,
-    # but I thought it was too cool to not sneak in here!
+
     commands = {
-        'C': run_caesar,         # Caesar Cipher
-        'V': run_vigenere,       # Vigenere Cipher
-        'M': run_merkle_hellman  # Merkle-Hellman Knapsack Cryptosystem
+        'C': run_caesar,
+        'V': run_vigenere,
+        'S': run_scytale,
+        'R': run_railfence,
+        'M': run_merkle_hellman
     }
     commands[tool]()
 

@@ -1,14 +1,25 @@
-Name: <YOUR NAME>
-SUNet: <SUNet ID>
+Name: <Erdei Julia Annegret>
+SUNet: <ejam0390>
 
 In 1-3 sentences per section, comment on your approach to each of the parts of the assignment. What was your high-level strategy? How did you translate that into code? Did you make use of any Pythonic practices? We want you to reflect on your coding style, and whether you're making full use of the utilities provides.
 
-
 # Caesar Cipher
-
+-sorba megyünk a szövegen, ha betű akkor atalakitjuk ASCII kodba
+-hozzáadunk 3-at, hogy eltoljuk
+-majd beletesszük a tiktositott szövegbe a karaktert
+-forditva ugyanez csak -3-mal
 
 # Vigenere Cipher
+-ugyanaz mint az előző, csak itt az adott kulcsszó, karakterértékével toljuk el a betűt
+-forditva ugyanez, de kell tudni a kulcsszót, hogy mennyit kell kivonni belőle
 
+# Scytale Cipher
+-megnezem szoveg hosszat, oszlopok szamat a kerulet alapjan
+-aztán annyival lépek a szövegbe és iratom ki amellyel először az elso sort aztan a masodikat majd a többit, dupla forral
 
-# Merkle-Hellman Knapsack Cryptosystem
+#Railfence Cipher
+-cikkcakk mintában írjuk le a szöveget meghatározott számú „sínre”
+-ha elérjük a tetejét vagy alját, irányt váltunk  fel-le
+-titkosításnál a síneket egymás után olvassuk ki, így áll össze a rejtett üzenet
+-visszafejtéskor előbb kiszámoljuk, hány karakter került minden sínre, majd ugyanilyen cikkcakkban olvassuk vissza
 

@@ -3,9 +3,9 @@
 File: crypto.py
 ---------------
 Assignment 1: Cryptography
-Course: CS 41
-Name: <YOUR NAME>
-SUNet: <SUNet ID>
+Course: 631
+Name: <Erdei Julia Annegret>
+SUNet: <ejam0390>
 
 Replace this with a description of the program.
 """
@@ -14,117 +14,218 @@ import utils
 # Caesar Cipher
 
 def encrypt_caesar(plaintext):
-    """Encrypt plaintext using a Caesar cipher.
-
-    Add more implementation details here.
-    """
-    raise NotImplementedError  # Your implementation here
+    titkos_szoveg  = ""
+    for karakter in plaintext:
+        if karakter.isalpha():
+            eltolas = ord(karakter) - ord('A') + 3
+            ujkar = chr((eltolas % 26) + ord('A'))
+            titkos_szoveg += ujkar
+        else:
+            titkos_szoveg += karakter
+    return titkos_szoveg
 
 
 def decrypt_caesar(ciphertext):
-    """Decrypt a ciphertext using a Caesar cipher.
+    eredeti_szoveg  = ""
 
-    Add more implementation details here.
-    """
-    raise NotImplementedError  # Your implementation here
+    for karakter in ciphertext:
+        if karakter.isalpha():
+            eltolas = ord(karakter) - ord('A') - 3
+            ujkar = chr((eltolas % 26) + ord('A'))
+            eredeti_szoveg += ujkar
+        else:
+            eredeti_szoveg += karakter
+
+    return eredeti_szoveg
+
 
 
 # Vigenere Cipher
 
 def encrypt_vigenere(plaintext, keyword):
-    """Encrypt plaintext using a Vigenere cipher with a keyword.
+    titkos_szoveg = ""
+    kulcshossza = len(keyword)
 
-    Add more implementation details here.
-    """
-    raise NotImplementedError  # Your implementation here
+    for i, karakter in enumerate(plaintext):
+        e_ertek = ord(karakter) - ord('A')
+        k_ertek = ord(keyword[i % kulcshossza]) - ord('A')
 
+        ujkar = (e_ertek + k_ertek) % 26
+        titkos_szoveg += chr(ujkar + ord('A'))
+
+    return titkos_szoveg
 
 def decrypt_vigenere(ciphertext, keyword):
-    """Decrypt ciphertext using a Vigenere cipher with a keyword.
+    eredeti_szoveg = ""
+    kulcshossza = len(keyword)
 
-    Add more implementation details here.
-    """
-    raise NotImplementedError  # Your implementation here
+    for i, karakter in enumerate(ciphertext):
+        t_ertek = ord(karakter) - ord('A')
+        k_ertek = ord(keyword[i % kulcshossza]) - ord('A')
+
+        ujkar = (t_ertek - k_ertek) % 26
+        eredeti_szoveg += chr(ujkar + ord('A'))
+
+    return eredeti_szoveg
+
+
+
+# Scytale Cipher
+
+def encrypt_scytale(plaintext, circumference):
+    titkos_szoveg = ""
+    hossz = len(plaintext)
+    oszlopok = hossz// circumference  
+    for i in range(circumference):
+        for j in range(oszlopok + 1):
+            index = i + j * circumference
+            if index < hossz:
+                titkos_szoveg += plaintext[index]
+
+    return titkos_szoveg
+    
+def decrypt_scytale(ciphertext, circumference): 
+    eredeti_szoveg = ""
+    hossz = len(ciphertext)
+    oszlopok = hossz// circumference
+
+    plaintext = [''] * hossz
+    k = 0
+    for i in range(circumference):
+        for j in range(oszlopok + 1):
+            index = i + j * circumference
+            if index < hossz:
+                plaintext[index] = ciphertext[k]
+                k += 1
+
+    eredeti_szoveg = ''.join(plaintext)
+    return eredeti_szoveg
+
+
+# Railfence Cipher
+
+def encrypt_railfence(plaintext, num_sin):
+    sinek = [""] * num_sin
+    index = 0
+    lefelé = True
+
+    for betu in plaintext:
+        sinek[index] += betu
+
+        if index == 0:
+            lefelé = True
+        elif index == num_sin - 1:
+            lefelé = False
+
+        if lefelé:
+            index += 1
+        else:
+            index -= 1
+
+    titkos_szoveg = "".join(sinek)
+    return titkos_szoveg
+
+def decrypt_railfence(ciphertext, num_sin):
+    hossz = len(ciphertext)
+    sin_hosszak = [0] * num_sin
+    index = 0
+    lefelé = True
+
+    for i in range(hossz):
+        sin_hosszak[index] += 1
+        
+        if index == 0:
+            lefelé = True
+        elif index == num_sin - 1:
+            lefelé = False
+            
+        if lefelé:
+            index += 1
+        else:
+            index -= 1
+    
+    sinek = []
+    aktualis_pozicio = 0
+    for sin_hossz in sin_hosszak:
+        sinek.append(ciphertext[aktualis_pozicio:aktualis_pozicio + sin_hossz])
+        aktualis_pozicio += sin_hossz
+
+    eredeti_szoveg = ""
+    sin_poziciok = [0] * num_sin
+    index = 0
+    lefelé = True
+    
+    for i in range(hossz):
+        eredeti_szoveg += sinek[index][sin_poziciok[index]]
+        sin_poziciok[index] += 1
+        
+        if index == 0:
+            lefelé = True
+        elif index == num_sin - 1:
+            lefelé = False
+            
+        if lefelé:
+            index += 1
+        else:
+            index -= 1
+            
+    return eredeti_szoveg
 
 
 # Merkle-Hellman Knapsack Cryptosystem
 
-def generate_private_key(n=8):
-    """Generate a private key for use in the Merkle-Hellman Knapsack Cryptosystem.
-
-    Following the instructions in the handout, construct the private key components
-    of the MH Cryptosystem. This consistutes 3 tasks:
-
-    1. Build a superincreasing sequence `w` of length n
-        (Note: you can check if a sequence is superincreasing with `utils.is_superincreasing(seq)`)
-    2. Choose some integer `q` greater than the sum of all elements in `w`
-    3. Discover an integer `r` between 2 and q that is coprime to `q` (you can use utils.coprime)
-
-    You'll need to use the random module for this function, which has been imported already
-
-    Somehow, you'll have to return all of these values out of this function! Can we do that in Python?!
-
-    @param n bitsize of message to send (default 8)
-    @type n int
-
-    @return 3-tuple `(w, q, r)`, with `w` a n-tuple, and q and r ints.
-    """
+def generate_private_key(n=8):    
     raise NotImplementedError  # Your implementation here
 
 def create_public_key(private_key):
-    """Create a public key corresponding to the given private key.
-
-    To accomplish this, you only need to build and return `beta` as described in the handout.
-
-        beta = (b_1, b_2, ..., b_n) where b_i = r × w_i mod q
-
-    Hint: this can be written in one line using a list comprehension
-
-    @param private_key The private key
-    @type private_key 3-tuple `(w, q, r)`, with `w` a n-tuple, and q and r ints.
-
-    @return n-tuple public key
-    """
     raise NotImplementedError  # Your implementation here
 
-
 def encrypt_mh(message, public_key):
-    """Encrypt an outgoing message using a public key.
-
-    1. Separate the message into chunks the size of the public key (in our case, fixed at 8)
-    2. For each byte, determine the 8 bits (the `a_i`s) using `utils.byte_to_bits`
-    3. Encrypt the 8 message bits by computing
-         c = sum of a_i * b_i for i = 1 to n
-    4. Return a list of the encrypted ciphertexts for each chunk in the message
-
-    Hint: think about using `zip` at some point
-
-    @param message The message to be encrypted
-    @type message bytes
-    @param public_key The public key of the desired recipient
-    @type public_key n-tuple of ints
-
-    @return list of ints representing encrypted bytes
-    """
     raise NotImplementedError  # Your implementation here
 
 def decrypt_mh(message, private_key):
-    """Decrypt an incoming message using a private key
-
-    1. Extract w, q, and r from the private key
-    2. Compute s, the modular inverse of r mod q, using the
-        Extended Euclidean algorithm (implemented at `utils.modinv(r, q)`)
-    3. For each byte-sized chunk, compute
-         c' = cs (mod q)
-    4. Solve the superincreasing subset sum using c' and w to recover the original byte
-    5. Reconsitite the encrypted bytes to get the original message back
-
-    @param message Encrypted message chunks
-    @type message list of ints
-    @param private_key The private key of the recipient
-    @type private_key 3-tuple of w, q, and r
-
-    @return bytearray or str of decrypted characters
-    """
     raise NotImplementedError  # Your implementation here
 
+
+if __name__ == "__main__":
+    # 1. Caesar teszt
+    print("\nCaesar teszt:")
+    eredeti = "HELLO WORLDX!  100"
+    titkos = encrypt_caesar(eredeti)
+    visszafejtett = decrypt_caesar(titkos)
+    print(f"Eredeti szöveg: {eredeti}")
+    print(f"Titkosított szöveg: {titkos}")
+    print(f"Visszafejtett szöveg: {visszafejtett}")
+    
+    # 2. Vigenere teszt
+    print("\nVigenere teszt:")
+    eredeti = "ERDEIJULIAANNEGRET"
+    kulcs = "KEY"
+    titkos = encrypt_vigenere(eredeti, kulcs)
+    visszafejtett = decrypt_vigenere(titkos, kulcs)
+    print(f"Eredeti szöveg: {eredeti}")
+    print(f"Kulcsszó: {kulcs}")
+    print(f"Titkosított szöveg: {titkos}")
+    print(f"Visszafejtett szöveg: {visszafejtett}")
+
+    # 3. Scytale teszt
+    print("\nScytale teszt:")
+    eredeti = "MINDENHOLJODELEGJOBBOTTHON"  # 26 karakter hosszú
+    #eredeti = "EDDMEGABANANT" 
+    kerulet = 5
+    titkos = encrypt_scytale(eredeti, kerulet)
+    visszafejtett = decrypt_scytale(titkos, kerulet)
+    print(f"Eredeti szöveg: {eredeti}")
+    print(f"Titkosított szöveg: {titkos}")
+    print(f"Visszafejtett szöveg: {visszafejtett}")
+
+    # 4. Railfence teszt
+    print("\nRailfence teszt:")
+    eredeti = "EDDMEGABANANT"
+    num_sin = 4
+    titkos = encrypt_railfence(eredeti, num_sin)
+    visszafejtett = decrypt_railfence(titkos, num_sin)
+    print(f"Eredeti szöveg: {eredeti}")
+    print(f"Titkosított szöveg: {titkos}")
+    print(f"Visszafejtett szöveg: {visszafejtett}") 
+    
