@@ -1,0 +1,8 @@
+{
+  "blokkméret_bitek": 128,
+  "algoritmus": "AES",
+  "kulcs_hex": "4145534b756c63733132333435363738",
+  "mód": "ECB",
+  "padding": "schneier-ferguson",
+  "iv_hex": "0102030405060708090a0b0c0d0e0f10"
+}
