@@ -258,14 +258,5 @@ def alk_titkosit_visszafejt(konfig: dict, bemenet_fajl: str, kiir_prefix: str) -
     
     algoritmus = konfig['algoritmus'].upper()
     mod = konfig['mód'].upper()
-    
-    # fájlok mentése
-    titkos_fajl = f"{kiir_prefix}_{algoritmus}_{mod}.bin"
-    with open(titkos_fajl, 'wb') as f:
-        f.write(titkos)
-
-    vissza_fajl = f"{kiir_prefix}_{algoritmus}_{mod}.dec"
-    with open(vissza_fajl, 'wb') as f:
-        f.write(vissza)
 
     return titkos_fajl, vissza_fajl
